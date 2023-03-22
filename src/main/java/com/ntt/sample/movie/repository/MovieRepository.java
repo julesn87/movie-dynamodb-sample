@@ -3,17 +3,28 @@ package com.ntt.sample.movie.repository;
 import com.ntt.sample.movie.entity.MovieModel;
 import com.ntt.sample.movie.entity.MovieModel.MovieCategoryEnum;
 import com.ntt.sample.movie.entity.MovieModel.RoleEnum;
+import com.ntt.sample.movie.entity.MovieModel.TypeEnum;
 import com.ntt.sample.movie.misc.Utils;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
+import software.amazon.awssdk.enhanced.dynamodb.Expression;
+import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.BatchWriteItemEnhancedRequest;
+import software.amazon.awssdk.enhanced.dynamodb.model.Page;
+import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
 import software.amazon.awssdk.enhanced.dynamodb.model.WriteBatch;
 import software.amazon.awssdk.enhanced.dynamodb.model.WriteBatch.Builder;
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 @Repository
 public class MovieRepository {
@@ -33,9 +44,14 @@ public class MovieRepository {
 
   public Optional<MovieModel> getMovieDetails(String movieName) {
 
-    // TODO
+    MovieModel movie =
+        mappedTable.getItem(
+            Key.builder()
+                .partitionValue(MovieModel.createPartionKey(movieName))
+                .sortValue(MovieModel.createSortKey(TypeEnum.MOVIE, movieName))
+                .build());
 
-    return Optional.empty();
+    return Optional.ofNullable(movie);
   }
 
   public Optional<MovieModel> getDirectorByMovie(String movieName) {
@@ -47,23 +63,77 @@ public class MovieRepository {
 
   public List<MovieModel> getCharactersByMovie(String movieName) {
 
-    // TODO
+    QueryConditional queryConditional =
+        QueryConditional.sortBeginsWith(
+            Key.builder()
+                .partitionValue(MovieModel.createPartionKey(movieName))
+                .sortValue(TypeEnum.CHARACTER.name())
+                .build());
 
-    return Collections.emptyList();
+    return mappedTable.query(queryConditional).items().stream().collect(Collectors.toList());
   }
 
   public List<MovieModel> getMoviesByDirector(String director) {
 
-    // TODO
+    var gsi1 = mappedTable.index(MovieModel.GSI_1);
 
-    return Collections.emptyList();
+    QueryConditional queryConditional =
+        QueryConditional.sortBeginsWith(
+            Key.builder()
+                .partitionValue(TypeEnum.DIRECTOR + "#" + director)
+                .sortValue(TypeEnum.MOVIE.name())
+                .build());
+
+    Iterator<Page<MovieModel>> iterator = gsi1.query(queryConditional).iterator();
+
+    List<MovieModel> movieModels = new ArrayList<>();
+
+    while (iterator.hasNext()) {
+      Page<MovieModel> movieModelPage = iterator.next();
+      movieModels.addAll(movieModelPage.items());
+    }
+
+    return movieModels;
   }
 
   public List<MovieModel> getMoviesByCharacterAndRole(String characterName, RoleEnum roleEnum) {
 
-    // TODO
+    var gsi1 = mappedTable.index(MovieModel.GSI_1);
 
-    return Collections.emptyList();
+    AttributeValue attributeValue = AttributeValue.builder().s(roleEnum.name()).build();
+
+    Map<String, AttributeValue> expressionValues = new HashMap<>();
+    expressionValues.put(":value", attributeValue);
+
+    Map<String, String> expressionAttributeNames = new HashMap<>();
+    expressionAttributeNames.put("#roleName", "role");
+
+    Expression expression =
+        Expression.builder()
+            .expression("#roleName = :value")
+            .expressionValues(expressionValues)
+            .expressionNames(expressionAttributeNames)
+            .build();
+
+    QueryConditional queryConditional =
+        QueryConditional.sortBeginsWith(
+            Key.builder()
+                .partitionValue(TypeEnum.CHARACTER + "#" + characterName)
+                .sortValue(TypeEnum.MOVIE.name())
+                .build());
+
+    Iterator<Page<MovieModel>> iterator =
+        gsi1.query(r -> r.queryConditional(queryConditional).filterExpression(expression))
+            .iterator();
+
+    List<MovieModel> movieModels = new ArrayList<>();
+
+    while (iterator.hasNext()) {
+      Page<MovieModel> movieModelPage = iterator.next();
+      movieModels.addAll(movieModelPage.items());
+    }
+
+    return movieModels;
   }
 
   public List<MovieModel> getActionMoviesBeforeYear(MovieCategoryEnum movieCategoryEnum,
