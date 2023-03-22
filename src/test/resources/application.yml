@@ -1,0 +1,11 @@
+server:
+  port: 8090
+
+aws:
+  dynamodb:
+    credentials:
+      accessKey: test
+      secretKey: test
+    url: http://localhost:4566
+    region: eu-central-1
+    on-demand-mode: truedock

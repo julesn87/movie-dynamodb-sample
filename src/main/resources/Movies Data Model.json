@@ -1,0 +1,307 @@
+{
+  "ModelName": "Movies Data Model",
+  "ModelMetadata": {
+    "Author": "",
+    "DateCreated": "Mar 01, 2023, 11:17 PM",
+    "DateLastModified": "Mar 22, 2023, 12:54 AM",
+    "Description": "",
+    "AWSService": "Amazon DynamoDB",
+    "Version": "3.0"
+  },
+  "DataModel": [
+    {
+      "TableName": "Movie",
+      "KeyAttributes": {
+        "PartitionKey": {
+          "AttributeName": "pk",
+          "AttributeType": "S"
+        },
+        "SortKey": {
+          "AttributeName": "sk",
+          "AttributeType": "S"
+        }
+      },
+      "NonKeyAttributes": [
+        {
+          "AttributeName": "type",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "category",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "budget",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "year",
+          "AttributeType": "N"
+        },
+        {
+          "AttributeName": "role",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "playedBy",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "name",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "nationality",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "gsi1pk",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "gsi1sk",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "gsi2pk",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "gsi2sk",
+          "AttributeType": "S"
+        }
+      ],
+      "GlobalSecondaryIndexes": [
+        {
+          "IndexName": "gsi1",
+          "KeyAttributes": {
+            "PartitionKey": {
+              "AttributeName": "gsi1pk",
+              "AttributeType": "S"
+            },
+            "SortKey": {
+              "AttributeName": "gsi1sk",
+              "AttributeType": "S"
+            }
+          },
+          "Projection": {
+            "ProjectionType": "ALL"
+          }
+        },
+        {
+          "IndexName": "gsi2",
+          "KeyAttributes": {
+            "PartitionKey": {
+              "AttributeName": "gsi2pk",
+              "AttributeType": "S"
+            },
+            "SortKey": {
+              "AttributeName": "gsi2sk",
+              "AttributeType": "S"
+            }
+          },
+          "Projection": {
+            "ProjectionType": "ALL"
+          }
+        }
+      ],
+      "TableData": [
+        {
+          "pk": {
+            "S": "MOVIE#DieHard"
+          },
+          "sk": {
+            "S": "MOVIE#DieHard"
+          },
+          "type": {
+            "S": "MOVIE"
+          },
+          "category": {
+            "S": "ACTION"
+          },
+          "budget": {
+            "S": "35"
+          },
+          "year": {
+            "N": "1988"
+          },
+          "gsi1pk": {
+            "S": "MOVIE#DieHard"
+          },
+          "gsi1sk": {
+            "S": "MOVIE#DieHard"
+          },
+          "gsi2pk": {
+            "S": "ACTION"
+          },
+          "gsi2sk": {
+            "S": "1988"
+          }
+        },
+        {
+          "pk": {
+            "S": "MOVIE#DieHard2"
+          },
+          "sk": {
+            "S": "MOVIE#DieHard2"
+          },
+          "type": {
+            "S": "MOVIE"
+          },
+          "category": {
+            "S": "ACTION"
+          },
+          "budget": {
+            "S": "70"
+          },
+          "year": {
+            "N": "1990"
+          },
+          "gsi1pk": {
+            "S": "MOVIE#DieHard2"
+          },
+          "gsi1sk": {
+            "S": "MOVIE#DieHard2"
+          },
+          "gsi2pk": {
+            "S": "ACTION"
+          },
+          "gsi2sk": {
+            "S": "1990"
+          }
+        },
+        {
+          "pk": {
+            "S": "MOVIE#DieHard"
+          },
+          "sk": {
+            "S": "CHARACTER#JohnMcClane"
+          },
+          "type": {
+            "S": "CHARACTER"
+          },
+          "role": {
+            "S": "protagonist"
+          },
+          "playedBy": {
+            "S": "Bruce Willis"
+          },
+          "name": {
+            "S": "John McClane"
+          },
+          "nationality": {
+            "S": "Irish-American"
+          },
+          "gsi1pk": {
+            "S": "CHARACTER#JohnMcClane"
+          },
+          "gsi1sk": {
+            "S": "MOVIE#DieHard"
+          }
+        },
+        {
+          "pk": {
+            "S": "MOVIE#DieHard"
+          },
+          "sk": {
+            "S": "DIRECTOR#JohnMcTiernan"
+          },
+          "type": {
+            "S": "DIRECTOR"
+          },
+          "name": {
+            "S": "John McTiernan"
+          },
+          "gsi1pk": {
+            "S": "DIRECTOR#JohnMcTiernan"
+          },
+          "gsi1sk": {
+            "S": "MOVIE#DieHard"
+          }
+        },
+        {
+          "pk": {
+            "S": "MOVIE#DieHard2"
+          },
+          "sk": {
+            "S": "CHARACTER#JohnMcClane"
+          },
+          "type": {
+            "S": "CHARACTER"
+          },
+          "role": {
+            "S": "protagonist"
+          },
+          "playedBy": {
+            "S": "Bruce Willis"
+          },
+          "name": {
+            "S": "John McClane"
+          },
+          "nationality": {
+            "S": "Irish-American"
+          },
+          "gsi1pk": {
+            "S": "CHARACTER#JohnMcClane"
+          },
+          "gsi1sk": {
+            "S": "MOVIE#DieHard2"
+          }
+        },
+        {
+          "pk": {
+            "S": "MOVIE#DieHard2"
+          },
+          "sk": {
+            "S": "DIRECTOR#RennyHarlin"
+          },
+          "type": {
+            "S": "DIRECTOR"
+          },
+          "name": {
+            "S": "Renny Harlin"
+          },
+          "gsi1pk": {
+            "S": "DIRECTOR#RennyHarlin"
+          },
+          "gsi1sk": {
+            "S": "MOVIE#DieHard2"
+          }
+        },
+        {
+          "pk": {
+            "S": "MOVIE#DieHard"
+          },
+          "sk": {
+            "S": "CHARACTER#HansGruber"
+          },
+          "type": {
+            "S": "CHARACTER"
+          },
+          "role": {
+            "S": "antagonist"
+          },
+          "playedBy": {
+            "S": "Alan Rickman"
+          },
+          "name": {
+            "S": "Hans Gruber"
+          },
+          "nationality": {
+            "S": "German"
+          },
+          "gsi1pk": {
+            "S": "CHARACTER#HansGruber"
+          },
+          "gsi1sk": {
+            "S": "MOVIE#DieHard"
+          }
+        }
+      ],
+      "DataAccess": {
+        "MySql": {}
+      },
+      "BillingMode": "PAY_PER_REQUEST"
+    }
+  ]
+}
